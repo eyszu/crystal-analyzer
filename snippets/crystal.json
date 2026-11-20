@@ -1,0 +1,132 @@
+{
+  "class": {
+    "prefix": "cls",
+    "body": ["class ${1:Name}", "  $0", "end"],
+    "description": "class"
+  },
+  "struct": {
+    "prefix": "struct",
+    "body": ["struct ${1:Name}", "  $0", "end"],
+    "description": "struct"
+  },
+  "module": {
+    "prefix": "mod",
+    "body": ["module ${1:Name}", "  $0", "end"],
+    "description": "module"
+  },
+  "enum": {
+    "prefix": "enum",
+    "body": ["enum ${1:Name}", "  ${2:Value}", "end"],
+    "description": "enum"
+  },
+  "def": {
+    "prefix": "def",
+    "body": ["def ${1:name}(${2:args})", "  $0", "end"],
+    "description": "method definition"
+  },
+  "def typed": {
+    "prefix": "deft",
+    "body": ["def ${1:name}(${2:arg} : ${3:Type}) : ${4:ReturnType}", "  $0", "end"],
+    "description": "method definition with types"
+  },
+  "initialize": {
+    "prefix": "init",
+    "body": ["def initialize(${1:args})", "  $0", "end"],
+    "description": "constructor"
+  },
+  "getter": {
+    "prefix": "getter",
+    "body": "getter ${1:name} : ${2:Type}",
+    "description": "getter macro"
+  },
+  "property": {
+    "prefix": "prop",
+    "body": "property ${1:name} : ${2:Type}",
+    "description": "property macro"
+  },
+  "record": {
+    "prefix": "record",
+    "body": "record ${1:Name}, ${2:field} : ${3:Type}",
+    "description": "record macro"
+  },
+  "macro": {
+    "prefix": "macro",
+    "body": ["macro ${1:name}(${2:args})", "  $0", "end"],
+    "description": "macro definition"
+  },
+  "macro expression": {
+    "prefix": "{{",
+    "body": "{{ ${1:expr} }}",
+    "description": "macro expression"
+  },
+  "macro control": {
+    "prefix": "{%",
+    "body": ["{% ${1:if ${2:cond}} %}", "  $0", "{% end %}"],
+    "description": "macro control block"
+  },
+  "describe": {
+    "prefix": "desc",
+    "body": ["describe ${1:\"${2:subject}\"} do", "  $0", "end"],
+    "description": "spec describe"
+  },
+  "it": {
+    "prefix": "it",
+    "body": ["it \"${1:does something}\" do", "  $0", "end"],
+    "description": "spec example"
+  },
+  "spec header": {
+    "prefix": "spec",
+    "body": ["require \"./spec_helper\"", "", "describe ${1:Subject} do", "  it \"${2:works}\" do", "    $0", "  end", "end"],
+    "description": "spec file skeleton"
+  },
+  "case": {
+    "prefix": "case",
+    "body": ["case ${1:value}", "when ${2:pattern}", "  $0", "else", "  ", "end"],
+    "description": "case/when"
+  },
+  "case in": {
+    "prefix": "casein",
+    "body": ["case ${1:value}", "in ${2:Type}", "  $0", "end"],
+    "description": "exhaustive case/in"
+  },
+  "begin rescue": {
+    "prefix": "begin",
+    "body": ["begin", "  $1", "rescue ${2:ex} : ${3:Exception}", "  $0", "end"],
+    "description": "begin/rescue"
+  },
+  "each": {
+    "prefix": "each",
+    "body": ["${1:items}.each do |${2:item}|", "  $0", "end"],
+    "description": "each block"
+  },
+  "each_with_index": {
+    "prefix": "ewi",
+    "body": ["${1:items}.each_with_index do |${2:item}, ${3:i}|", "  $0", "end"],
+    "description": "each_with_index block"
+  },
+  "spawn": {
+    "prefix": "spawn",
+    "body": ["spawn do", "  $0", "end"],
+    "description": "spawn fiber"
+  },
+  "require": {
+    "prefix": "req",
+    "body": "require \"${1:lib}\"",
+    "description": "require"
+  },
+  "annotation": {
+    "prefix": "@[",
+    "body": "@[${1:Annotation}($2)]",
+    "description": "annotation"
+  },
+  "lib": {
+    "prefix": "lib",
+    "body": ["@[Link(\"${1:c}\")]", "lib Lib${2:C}", "  fun ${3:name}(${4:arg} : ${5:Int32}) : ${6:Int32}", "end"],
+    "description": "C binding"
+  },
+  "main guard": {
+    "prefix": "main",
+    "body": ["if PROGRAM_NAME.ends_with?(\"${1:app}\")", "  $0", "end"],
+    "description": "run only when executed directly"
+  }
+}

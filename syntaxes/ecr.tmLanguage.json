@@ -1,0 +1,63 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "ECR (Embedded Crystal)",
+  "scopeName": "text.html.ecr",
+  "fileTypes": ["ecr"],
+  "patterns": [
+    { "include": "#tags" },
+    { "include": "text.html.basic" }
+  ],
+  "injections": {
+    "L:text.html.ecr - (meta.embedded.block.ecr | meta.embedded.line.ecr | comment.block.ecr)": {
+      "patterns": [{ "include": "#tags" }]
+    }
+  },
+  "repository": {
+    "tags": {
+      "patterns": [
+        { "include": "#escape" },
+        { "include": "#comment" },
+        { "include": "#output" },
+        { "include": "#code" }
+      ]
+    },
+    "escape": {
+      "match": "<%%|%%>",
+      "name": "constant.character.escape.ecr"
+    },
+    "comment": {
+      "name": "comment.block.ecr",
+      "begin": "<%-?#",
+      "end": "-?%>",
+      "beginCaptures": { "0": { "name": "punctuation.definition.comment.begin.ecr" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.comment.end.ecr" } }
+    },
+    "output": {
+      "name": "meta.embedded.line.ecr",
+      "contentName": "source.crystal",
+      "begin": "<%=",
+      "end": "(-)?(%>)",
+      "beginCaptures": { "0": { "name": "punctuation.section.embedded.begin.ecr" } },
+      "endCaptures": {
+        "1": { "name": "punctuation.section.embedded.trim.ecr" },
+        "2": { "name": "punctuation.section.embedded.end.ecr" }
+      },
+      "patterns": [{ "include": "source.crystal" }]
+    },
+    "code": {
+      "name": "meta.embedded.block.ecr",
+      "contentName": "source.crystal",
+      "begin": "<%(-)?(?![%=#])",
+      "end": "(-)?(%>)",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.embedded.begin.ecr" },
+        "1": { "name": "punctuation.section.embedded.trim.ecr" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.section.embedded.trim.ecr" },
+        "2": { "name": "punctuation.section.embedded.end.ecr" }
+      },
+      "patterns": [{ "include": "source.crystal" }]
+    }
+  }
+}

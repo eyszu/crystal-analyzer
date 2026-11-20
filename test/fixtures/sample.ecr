@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head><title><%= title %></title></head>
+  <body class="<%= klass %>">
+    <%# a comment %>
+    <%- if user = current_user -%>
+      <p>Hello, <%= user.name.upcase %>!</p>
+    <%- end -%>
+    <% items.each do |item| %>
+      <li id="item-<%= item.id %>"><%= item.label %></li>
+    <% end %>
+    <p>literal <%% not code %%></p>
+  </body>
+</html>

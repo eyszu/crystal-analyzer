@@ -1,0 +1,442 @@
+{
+  "name": "crystal-analyzer",
+  "displayName": "Crystal Analyzer",
+  "description": "Crystal language support: language server client (completion, navigation, hover, signature help, inlay hints, semantic highlighting), syntax highlighting, snippets, spec/run tasks and CodeLLDB debugging.",
+  "version": "0.1.0",
+  "publisher": "local",
+  "icon": "images/icon.png",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Debuggers",
+    "Other"
+  ],
+  "keywords": [
+    "crystal",
+    "crystal-lang",
+    "cr",
+    "shards",
+    "lsp",
+    "crystalline"
+  ],
+  "activationEvents": [
+    "onLanguage:crystal",
+    "workspaceContains:**/shard.yml",
+    "onDebugResolve:crystal"
+  ],
+  "main": "./out/extension.js",
+  "extensionKind": [
+    "workspace"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "crystal",
+        "aliases": [
+          "Crystal",
+          "crystal"
+        ],
+        "extensions": [
+          ".cr"
+        ],
+        "firstLine": "^#!.*\\bcrystal\\b",
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "ecr",
+        "aliases": [
+          "ECR",
+          "Embedded Crystal"
+        ],
+        "extensions": [
+          ".ecr"
+        ],
+        "configuration": "./ecr-language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "crystal",
+        "scopeName": "source.crystal",
+        "path": "./syntaxes/crystal.tmLanguage.json"
+      },
+      {
+        "language": "ecr",
+        "scopeName": "text.html.ecr",
+        "path": "./syntaxes/ecr.tmLanguage.json",
+        "embeddedLanguages": {
+          "text.html.ecr": "html",
+          "source.crystal": "crystal",
+          "meta.embedded.block.ecr": "crystal",
+          "meta.embedded.line.ecr": "crystal"
+        }
+      }
+    ],
+    "snippets": [
+      {
+        "language": "crystal",
+        "path": "./snippets/crystal.json"
+      }
+    ],
+    "breakpoints": [
+      {
+        "language": "crystal"
+      }
+    ],
+    "configurationDefaults": {
+      "[crystal]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.semanticHighlighting.enabled": true,
+        "editor.formatOnSave": false
+      }
+    },
+    "semanticTokenScopes": [
+      {
+        "language": "crystal",
+        "scopes": {
+          "macro": [
+            "entity.name.function.macro.crystal"
+          ],
+          "decorator": [
+            "entity.name.function.decorator.crystal"
+          ],
+          "interface": [
+            "entity.name.type.interface.crystal"
+          ],
+          "namespace": [
+            "entity.name.namespace.crystal"
+          ],
+          "property.static": [
+            "variable.other.readwrite.class.crystal"
+          ],
+          "variable.readonly": [
+            "constant.other.crystal"
+          ]
+        }
+      }
+    ],
+    "configuration": {
+      "title": "Crystal",
+      "properties": {
+        "crystal.server.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Start the Crystal language server. When disabled (or when the server cannot be found) the extension falls back to built-in text-based navigation."
+        },
+        "crystal.server.path": {
+          "type": "string",
+          "default": "crystalline",
+          "scope": "machine-overridable",
+          "markdownDescription": "Path or command name of the Crystal language server executable. Defaults to [crystalline](https://github.com/elbywan/crystalline). Any LSP server that speaks stdio works (for example `crystal-language-server`)."
+        },
+        "crystal.server.args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Extra command-line arguments passed to the language server."
+        },
+        "crystal.server.env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "description": "Extra environment variables for the language server process (for example CRYSTAL_PATH or CRYSTAL_CACHE_DIR)."
+        },
+        "crystal.compiler.path": {
+          "type": "string",
+          "default": "crystal",
+          "scope": "machine-overridable",
+          "description": "Path or command name of the Crystal compiler, used for run / spec / build / debug commands."
+        },
+        "crystal.trace.server": {
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Trace the communication between VS Code and the language server."
+        },
+        "crystal.semanticTokens.fallback": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "always",
+            "never"
+          ],
+          "enumDescriptions": [
+            "Use the built-in scanner only if the language server does not provide semantic tokens.",
+            "Always use the built-in scanner (overrides the server).",
+            "Never use the built-in scanner."
+          ],
+          "default": "auto",
+          "description": "Controls the built-in (scanner based) semantic token provider."
+        },
+        "crystal.inlayHints.fallback": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "always",
+            "never"
+          ],
+          "enumDescriptions": [
+            "Use the built-in hints only if the language server does not provide inlay hints.",
+            "Always add the built-in hints (may duplicate the server's hints).",
+            "Never add the built-in hints."
+          ],
+          "default": "auto",
+          "description": "Controls the built-in inlay hints provider."
+        },
+        "crystal.inlayHints.variableTypes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Built-in hints: show inferred types for variables assigned from literals or `Foo.new`."
+        },
+        "crystal.inlayHints.parameterNames": {
+          "type": "string",
+          "enum": [
+            "none",
+            "literals",
+            "all"
+          ],
+          "default": "literals",
+          "description": "Built-in hints: show parameter names at call sites (requires a working go-to-definition)."
+        },
+        "crystal.codeLens.specs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a Run code lens above describe / context / it blocks in *_spec.cr files."
+        },
+        "crystal.debug.buildFlags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Extra flags passed to `crystal build --debug` before debugging."
+        },
+        "crystal.debug.launchOverrides": {
+          "type": "object",
+          "default": {},
+          "description": "Extra properties merged into the generated CodeLLDB launch configuration (for example `{ \"env\": { \"FOO\": \"1\" } }`)."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "crystal.restartServer",
+        "title": "Restart Language Server",
+        "category": "Crystal"
+      },
+      {
+        "command": "crystal.showServerLog",
+        "title": "Show Language Server Log",
+        "category": "Crystal"
+      },
+      {
+        "command": "crystal.runFile",
+        "title": "Run Current File",
+        "category": "Crystal",
+        "icon": "$(play)"
+      },
+      {
+        "command": "crystal.debugFile",
+        "title": "Debug Current File (CodeLLDB)",
+        "category": "Crystal",
+        "icon": "$(debug-alt)"
+      },
+      {
+        "command": "crystal.runSpecFile",
+        "title": "Run Specs in Current File",
+        "category": "Crystal"
+      },
+      {
+        "command": "crystal.runSpecAtLine",
+        "title": "Run Spec at Cursor",
+        "category": "Crystal"
+      },
+      {
+        "command": "crystal.runAllSpecs",
+        "title": "Run All Specs",
+        "category": "Crystal"
+      },
+      {
+        "command": "crystal.formatFile",
+        "title": "Format File with `crystal tool format`",
+        "category": "Crystal"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "crystal.runFile",
+          "when": "resourceLangId == crystal",
+          "group": "navigation@1"
+        },
+        {
+          "command": "crystal.debugFile",
+          "when": "resourceLangId == crystal",
+          "group": "navigation@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "crystal.runFile",
+          "when": "editorLangId == crystal"
+        },
+        {
+          "command": "crystal.debugFile",
+          "when": "editorLangId == crystal"
+        },
+        {
+          "command": "crystal.runSpecFile",
+          "when": "editorLangId == crystal"
+        },
+        {
+          "command": "crystal.runSpecAtLine",
+          "when": "editorLangId == crystal"
+        },
+        {
+          "command": "crystal.formatFile",
+          "when": "editorLangId == crystal"
+        }
+      ]
+    },
+    "taskDefinitions": [
+      {
+        "type": "crystal",
+        "required": [
+          "command"
+        ],
+        "properties": {
+          "command": {
+            "type": "string",
+            "enum": [
+              "build",
+              "spec",
+              "run",
+              "install"
+            ],
+            "description": "build / install use `shards`; spec / run use `crystal`."
+          },
+          "file": {
+            "type": "string",
+            "description": "File for `run` or `spec`."
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Extra arguments."
+          }
+        }
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "crystal",
+        "label": "Crystal",
+        "languages": [
+          "crystal"
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "properties": {
+              "program": {
+                "type": "string",
+                "default": "${file}",
+                "description": "A .cr file to build with `crystal build --debug` and launch, or the path to an already built executable."
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": [],
+                "description": "Arguments passed to the program."
+              },
+              "cwd": {
+                "type": "string",
+                "default": "${workspaceFolder}",
+                "description": "Working directory."
+              },
+              "buildFlags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "default": [],
+                "description": "Extra flags for `crystal build`."
+              },
+              "env": {
+                "type": "object",
+                "default": {},
+                "description": "Environment variables."
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "crystal",
+            "request": "launch",
+            "name": "Debug current Crystal file",
+            "program": "${file}",
+            "args": [],
+            "cwd": "${workspaceFolder}"
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "Crystal: Debug file",
+            "description": "Build with debug info and launch under CodeLLDB",
+            "body": {
+              "type": "crystal",
+              "request": "launch",
+              "name": "Debug ${1:main}",
+              "program": "^\"\\${workspaceFolder}/src/${1:main}.cr\"",
+              "args": [],
+              "cwd": "^\"\\${workspaceFolder}\""
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit",
+    "build": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node18 --sourcemap",
+    "watch": "npm run build -- --watch",
+    "vscode:prepublish": "npm run typecheck && esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --target=node18 --minify",
+    "package": "vsce package --no-dependencies",
+    "gen:grammar": "node scripts/gen-grammar.mjs",
+    "test:grammar": "node scripts/test-grammar.mjs",
+    "test:tokenizer": "esbuild src/semanticTokenizer.ts src/scanner.ts --bundle --platform=node --format=esm --outdir=out/test --out-extension:.js=.mjs && node scripts/test-tokenizer.mjs",
+    "test": "npm run typecheck && npm run test:grammar && npm run test:ecr && npm run test:tokenizer && npm run test:require",
+    "test:ecr": "node scripts/test-ecr.mjs",
+    "test:require": "esbuild src/requireResolve.ts --bundle --platform=node --format=esm --outdir=out/test --out-extension:.js=.mjs --log-level=warning && node scripts/test-require.mjs"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "~1.90.0",
+    "@vscode/vsce": "^3.0.0",
+    "esbuild": "^0.24.0",
+    "tm-grammars": "^1.20.0",
+    "typescript": "^5.5.0",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.1.0"
+  }
+}
