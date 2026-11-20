@@ -2,7 +2,7 @@
   "name": "crystal-analyzer",
   "displayName": "Crystal Analyzer",
   "description": "Crystal language support: language server client (completion, navigation, hover, signature help, inlay hints, semantic highlighting), syntax highlighting, snippets, spec/run tasks and CodeLLDB debugging.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "AceBesmonte",
   "icon": "images/icon.png",
   "license": "MIT",
